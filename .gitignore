@@ -12,6 +12,7 @@ logs/
 .DS_Store
 
 # Configurações de ferramentas
-.prettierrc
+.prettierrc.json
 .prettierignore
 .eslintrc*
+eslint.config.mjs
