@@ -1,0 +1,17 @@
+# Dependências do Node.js
+node_modules/
+
+# Configurações do ambiente
+.env
+
+# Logs
+logs/
+*.log
+
+# Arquivos de cache do sistema
+.DS_Store
+
+# Configurações de ferramentas
+.prettierrc
+.prettierignore
+.eslintrc*
