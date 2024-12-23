@@ -1,27 +1,44 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import axios from 'axios'
 import ProductCard from '../components/ProductCard'
 
 function Home() {
-  const handleAddCart = (productName) => {
-    alert(`${productName} Adicionado ao carrinho!`)
+  const [products, setProducts] = useState([])
+
+  useEffect(() => {
+    axios
+      .get('http://localhost:5000/api/products')
+      .then((response) => {
+        setProducts(response.data)
+      })
+      .catch((error) => {
+        console.error('Erro ao buscar Produtos', error)
+      })
+  }, [])
+  const handleAddToCart = (productId) => {
+    axios
+      .post('http://localhost:5000/api/cart', { productId, quantity: 1 })
+      .then((response) => {
+        alert(response.data.message)
+      })
+      .catch((error) => {
+        console.error('Erro ao adicionar ao carrinho', error)
+      })
   }
 
   return (
     <div>
       <h1>Produtos</h1>
       <div style={{ display: 'flex', gap: '16px' }}>
-        <ProductCard
-          name="Produto 1"
-          price={19.99}
-          imageUrl="http://via.placeholder.com/150"
-          onAddToCart={() => handleAddCart('produto 1')}
-        />
-        <ProductCard
-          name="Produto 2"
-          price={29.99}
-          imageUrl="http://via.placeholder.com/150"
-          onAddToCart={() => handleAddCart('produto 2')}
-        />
+        {products.map((product) => (
+          <ProductCard
+            key={product.id}
+            name={product.name}
+            price={product.price}
+            imageUrl={product.imageUrl}
+            onAddToCart={() => handleAddToCart(product.id)}
+          />
+        ))}
       </div>
     </div>
   )

@@ -1,19 +1,30 @@
 {
-  "name": "e-commerce",
+  "name": "ecommerce",
   "version": "1.0.0",
-  "description": "",
-  "license": "ISC",
-  "author": "",
-  "type": "commonjs",
-  "main": "scripts.js",
+  "description": "\"# E-commerce Full Stack\"",
+  "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint backEnd/**/*.js frontEnd/**/*.jsx",
+    "format": "prettier --write ./backend/**/*.js"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/higorgsantana/ecommerce.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/higorgsantana/ecommerce/issues"
+  },
+  "homepage": "https://github.com/higorgsantana/ecommerce#readme",
   "devDependencies": {
     "@eslint/js": "^9.17.0",
     "eslint": "^9.17.0",
     "eslint-plugin-react": "^7.37.2",
-    "globals": "^15.13.0",
+    "globals": "^15.14.0",
     "prettier": "3.4.2"
   }
 }
