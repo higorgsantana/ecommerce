@@ -2,41 +2,34 @@ import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import ProductCard from '../components/ProductCard'
 
-function Home() {
+const Home = () => {
   const [products, setProducts] = useState([])
 
   useEffect(() => {
-    axios
-      .get('http://localhost:5000/api/products')
-      .then((response) => {
+    const fetchProducts = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/api/products')
+        console.log('Produtos recebidos do backend', response.data)
         setProducts(response.data)
-      })
-      .catch((error) => {
-        console.error('Erro ao buscar Produtos', error)
-      })
+      } catch (error) {
+        console.error('Erro ao buscar os produtos', error)
+      }
+    }
+
+    fetchProducts()
   }, [])
-  const handleAddToCart = (productId) => {
-    axios
-      .post('http://localhost:5000/api/cart', { productId, quantity: 1 })
-      .then((response) => {
-        alert(response.data.message)
-      })
-      .catch((error) => {
-        console.error('Erro ao adicionar ao carrinho', error)
-      })
-  }
 
   return (
     <div>
       <h1>Produtos</h1>
-      <div style={{ display: 'flex', gap: '16px' }}>
+      <div>
         {products.map((product) => (
           <ProductCard
             key={product.id}
+            id={product.id}
             name={product.name}
             price={product.price}
             imageUrl={product.imageUrl}
-            onAddToCart={() => handleAddToCart(product.id)}
           />
         ))}
       </div>

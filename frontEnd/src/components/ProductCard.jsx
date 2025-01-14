@@ -1,30 +1,42 @@
-import React from 'react'
-import PropTypes from 'prop-types'
+import React, { useState } from 'react'
 import Button from './Button'
+import { useCart } from '../assets/context/CartContext'
 
 /* eslint-disable react/prop-types */
-function ProductCard({ name, price, imageUrl, onAddToCart }) {
+export const ProductCard = ({ id, name, price, imageUrl }) => {
+  const { addToCart } = useCart()
+  const [buttonFeedback, setButtonFeedback] = useState(false)
+
+  const handleAddToCart = () => {
+    addToCart({ id, name, price, imageUrl })
+
+    setButtonFeedback(true)
+    setTimeout(() => setButtonFeedback(false), 2000)
+  }
+
+  const displayPrice =
+    price !== undefined ? `R$ ${price.toFixed(2)}` : 'Preço Indisponível'
+
   return (
-    <div className="product-card">
-      <img src={imageUrl} alt={name} className="product-image" />
-      <h3>{name}</h3>
-      <p>Preço: R$ {price.toFixed(2)}</p>
-      <Button onClick={onAddToCart} className="add-to-cart-btn">
-        Adicionar ao Carrinho
+    <div
+      className="product-card"
+      style={{ border: '1px solid #ccc', padding: '10px', margin: '10px' }}
+    >
+      <img
+        src={imageUrl}
+        alt={name || 'Produto'}
+        style={{ width: '100%', height: 'auto', objectFit: 'cover' }}
+      />
+      <h3>{name || 'Produto sem nome'}</h3>
+      <p>{displayPrice}</p>
+      <Button
+        onClick={handleAddToCart}
+        disabled={!id || !price || buttonFeedback}
+      >
+        {buttonFeedback ? 'Adicionado' : 'Adicionar ao Carrinho'}
       </Button>
     </div>
   )
-}
-
-ProductCard.PropTypes = {
-  name: PropTypes.string.isRequired,
-  price: PropTypes.number.isRequired,
-  imageUrl: PropTypes.string.isRequired,
-  onAddToCart: PropTypes.func,
-}
-
-ProductCard.defaultProps = {
-  onAddToCart: undefined,
 }
 
 export default ProductCard

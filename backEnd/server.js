@@ -40,9 +40,9 @@ app.post('/api/cart', (req, res) => {
     if (itemInCart) {
       itemInCart.quantity += quantity
     } else {
-      cart.push({ productId, quantity })
+      cart.push({ ...product, quantity })
     }
-    res.status(200).json({ massage: 'Produto adicionado ao carrinho' })
+    res.status(200).json(cart)
   } else {
     res.status(404).json({ massage: 'Produto não encontrado' })
   }

@@ -11,6 +11,9 @@ function Header() {
         <a href="/about" style={{ margin: '0 1rem' }}>
           Sobre
         </a>
+        <a href="/cart" style={{ margin: '0 1rem' }}>
+          Carrinho
+        </a>
       </nav>
     </header>
   )
