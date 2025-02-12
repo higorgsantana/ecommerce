@@ -1,0 +1,38 @@
+[
+  {
+    "id": 1,
+    "name": "Computador Gamer",
+    "price": 4500,
+    "image": "/images/computador.jpg",
+    "category": "Computadores"
+  },
+
+  {
+    "id": 2,
+    "name": "Mouse Gamer",
+    "price": 250,
+    "image": "/images/mouse.jpg",
+    "category": "Periféricos"
+  },
+  {
+    "id": 5,
+    "name": "Teclado Gamer",
+    "price": 200,
+    "image": "/images/teclado.jpg",
+    "category": "Periféricos"
+  },
+  {
+    "id": 3,
+    "name": "Placa de Vídeo",
+    "price": 1800,
+    "image": "/images/placa-video.jpg",
+    "category": "Placas de Vídeo"
+  },
+  {
+    "id": 4,
+    "name": "Monitor 24\"",
+    "price": 1000,
+    "image": "/images/monitor.jpg",
+    "category": "Monitores"
+  }
+]

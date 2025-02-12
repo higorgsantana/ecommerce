@@ -1,0 +1,61 @@
+.mobile-search-overlay {
+  position: fixed;
+  top: 70px;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Reduz padding interno dos inputs */
+.form-control.py-1 {
+  padding-top: 0.25rem !important;
+  padding-bottom: 0.25rem !important;
+}
+
+/* Ajusta tamanho dos botões */
+.btn-outline-light,
+.btn-primary {
+  padding: 0.25rem 0.75rem;
+}
+
+/* Remove borda entre input e botão */
+.border-end-0 {
+  border-right: 0 !important;
+}
+.border-start-0 {
+  border-left: 0 !important;
+}
+
+/* Ajusta hover dos botões */
+.btn-outline-light:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Melhora a search bar */
+.input-group .form-control:focus {
+  box-shadow: none;
+  border-color: #dee2e6;
+}
+
+/* Header fixo */
+.fixed-top {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1030;
+}
+
+/* Efeito de scroll */
+.header-scrolled {
+  background: rgba(33, 37, 41, 0.98) !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding-top: 0.5rem !important;
+  padding-bottom: 0.5rem !important;
+}
+
+/* Espaço para o header fixo */
+body {
+  padding-top: 72px; /* Ajuste conforme a altura do seu header */
+}

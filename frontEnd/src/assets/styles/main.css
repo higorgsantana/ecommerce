@@ -1,0 +1,38 @@
+.product-title,
+.category-title {
+  color: #212529 !important; /* Cor escura padrão */
+  font-size: 1.1rem;
+  min-height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card {
+  max-width: 300px; /* Limite máximo de largura */
+  margin: 0 auto; /* Centraliza os cards */
+  border-radius: 12px !important;
+  transition: transform 0.2s;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+}
+
+.btn-primary {
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+  transition: all 0.2s ease;
+}
+
+/* Efeito hover */
+.btn-primary:hover {
+  background-color: #0b5ed7 !important;
+  border-color: #0b5ed7 !important;
+}
+
+/* Opcional: Efeito ao clicar */
+.btn-primary:active {
+  background-color: #0a58ca !important;
+  border-color: #0a58ca !important;
+}
