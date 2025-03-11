@@ -1,59 +1,19 @@
+require('dotenv').config()
 const express = require('express')
+const mongoose = require('mongoose')
+const productRoutes = require('./routes/productRoutes')
 const cors = require('cors')
-const bodyParser = require('body-parser')
-
 const app = express()
-const port = 5000
 
+mongoose
+  .connect(process.env.MONGODB_URI)
+  .then(() => console.log('Conectado com MongoDB'))
+  .catch((err) => console.error('Erro de conexão: ', err))
+
+app.use(express.json())
 app.use(cors())
 
-app.use(bodyParser.json())
+app.use('/api/products', productRoutes)
 
-let products = [
-  {
-    id: 1,
-    name: 'product 1',
-    price: 19.99,
-    imageUrl: 'http://via.placeholder.com/150',
-  },
-  {
-    id: 2,
-    name: 'product 2',
-    price: 29.99,
-    imageUrl: 'http://via.placeholder.com/150',
-  },
-]
-
-let cart = []
-
-app.get('/api/products', (req, res) => {
-  res.json(products)
-})
-
-app.post('/api/cart', (req, res) => {
-  const { productId, quantity } = req.body
-  const product = products.find((p) => p.id === productId)
-
-  if (product) {
-    const itemInCart = cart.find((item) => item.productId === productId)
-
-    if (itemInCart) {
-      itemInCart.quantity += quantity
-    } else {
-      cart.push({ ...product, quantity })
-    }
-    res.status(200).json(cart)
-  } else {
-    res.status(404).json({ massage: 'Produto não encontrado' })
-  }
-})
-
-app.delete('/api/cart/:id', (req, res) => {
-  const productId = parseInt(req.params.id)
-  cart = cart.filter((item) => item.productId !== productId)
-  res.status(200).json({ message: 'Produto removido do carrinho' })
-})
-
-app.listen(port, () => {
-  console.log(`Servidor rodando na porta http://localhost:${port}`)
-})
+const PORT = process.env.PORT || 5000
+app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`))

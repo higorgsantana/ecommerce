@@ -6,12 +6,16 @@ import {
   Button,
   InputGroup,
   Spinner,
+  Dropdown,
 } from 'react-bootstrap'
-import { BiSearch, BiCart, BiUser } from 'react-icons/bi'
+import { BiSearch, BiCart, BiUser, BiMenu } from 'react-icons/bi'
 import Logo from './Logo'
 import useMobileDetection from '../hooks/useMobileDetection'
 import { useAuth } from '../context/AuthContext'
+import { Link } from 'react-router-dom'
+import { useCart } from '../context/CartContext'
 import '../assets/styles/components/header.css'
+import { auth } from '../firebase-config'
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false)
@@ -19,6 +23,7 @@ const Header = () => {
   const { isMobile } = useMobileDetection(768)
   const [showMobileSearch, setShowMobileSearch] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
+  const { cartItems } = useCart()
 
   const handleSearch = (e) => {
     e.preventDefault()
@@ -86,24 +91,38 @@ const Header = () => {
                   <Spinner animation="border" variant="light" size="sm" />
                 ) : user ? (
                   <div className="d-flex align-items-center">
-                    <Button variant="outline-light" className="me-2">
-                      <BiUser className="fs-5" />
-                    </Button>
-                    <Button variant="outline-danger" className="ms-2">
+                    <Link to="/profile">
+                      <Button variant="outline-light" className="me-2">
+                        <BiUser className="fs-5" />
+                      </Button>
+                    </Link>
+
+                    <Button
+                      variant="outline-danger"
+                      className="ms-2"
+                      onClick={() => auth.signOut()}
+                    >
                       Sair
                     </Button>
                   </div>
                 ) : (
                   <div className="d-flex align-items-center gap-2">
-                    <Button variant="outline-light">Entrar</Button>
-                    <Button variant="primary">Cadastrar</Button>
+                    <Link to="/login">
+                      <Button variant="outline-light">Entrar</Button>
+                    </Link>
+                    <Link to="/register">
+                      <Button variant="primary">Cadastrar</Button>
+                    </Link>
                   </div>
                 )}
-
-                <Button variant="outline-light" className="ms-3">
-                  <BiCart className="fs-5" />
-                  <span className="ms-1 badge bg-danger">3</span>
-                </Button>
+                <Link to="/cart" className="cart-link">
+                  <Button variant="outline-light" className="ms-3">
+                    <BiCart className="fs-5" />
+                    <span className="ms-1 badge bg-danger">
+                      {cartItems.reduce((acc, item) => acc + item.quantity, 0)}
+                    </span>
+                  </Button>
+                </Link>
               </>
             )}
 
@@ -117,10 +136,56 @@ const Header = () => {
                 >
                   <BiSearch className="fs-5" />
                 </Button>
-                <Button variant="link" className="text-white p-0">
-                  <BiCart className="fs-5" />
-                  <span className="ms-1 badge bg-danger">3</span>
-                </Button>
+                <Link to="/cart" className="cart-link">
+                  <Button variant="link" className="text-white p-0">
+                    <BiCart className="fs-5" />
+                    <span className="ms-1 badge bg-danger">
+                      {cartItems.reduce((acc, item) => acc + item.quantity, 0)}
+                    </span>
+                  </Button>
+                </Link>
+                <Dropdown>
+                  <Dropdown.Toggle
+                    variant="link"
+                    className="text-white p-0"
+                    id="dropdown-menu-mobile"
+                  >
+                    <BiMenu className="fs-4" />
+                  </Dropdown.Toggle>
+
+                  <Dropdown.Menu className="mt-2" align="end">
+                    {/* Conteúdo do menu */}
+                    {user ? (
+                      <>
+                        <Dropdown.Item as={Link} to="/profile">
+                          Perfil
+                        </Dropdown.Item>
+                        <Dropdown.Divider />
+                        <Dropdown.Item
+                          onClick={() => {
+                            auth.signOut()
+                          }}
+                          className="text-danger"
+                        >
+                          Sair
+                        </Dropdown.Item>
+                      </>
+                    ) : (
+                      <>
+                        <Dropdown.Item as={Link} to="/login">
+                          Entrar
+                        </Dropdown.Item>
+                        <Dropdown.Item as={Link} to="/register">
+                          Cadastrar
+                        </Dropdown.Item>
+                      </>
+                    )}
+                    <Dropdown.Divider />
+                    <Dropdown.Item as={Link} to="/about">
+                      Sobre
+                    </Dropdown.Item>
+                  </Dropdown.Menu>
+                </Dropdown>
               </div>
             )}
           </div>

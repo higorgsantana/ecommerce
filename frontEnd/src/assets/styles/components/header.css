@@ -57,5 +57,32 @@
 
 /* Espaço para o header fixo */
 body {
-  padding-top: 72px; /* Ajuste conforme a altura do seu header */
+  padding-top: 72px;
+}
+
+.dropdown-menu {
+  background-color: #343a40 !important; /* Cor do tema dark */
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.dropdown-item {
+  color: #fff !important;
+}
+
+.dropdown-item:hover {
+  background-color: #495057 !important;
+  color: #fff !important;
+}
+
+/* Remove o caret (setinha) do dropdown */
+.dropdown-toggle::after {
+  display: none !important;
+}
+
+.bi-menu {
+  transition: transform 0.2s ease;
+}
+
+.show .bi-menu {
+  transform: rotate(90deg);
 }
