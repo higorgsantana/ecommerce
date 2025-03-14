@@ -16,7 +16,9 @@ const RegisterPage = () => {
       await createUserWithEmailAndPassword(auth, email, password)
       navigate('/')
     } catch (err) {
-      setError('Erro no cadastro: ' + err.message)
+      if (err.code === 'auth/email-already-in-use') {
+        setError('Email já em uso, tente novamente com outro email')
+      }
     }
   }
 

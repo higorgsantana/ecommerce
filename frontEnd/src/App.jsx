@@ -16,16 +16,16 @@ import RequireAuth from './components/RequireAuth'
 
 function App() {
   return (
-    <CartProvider>
+    <Router>
       <AuthProvider>
-        <Router>
+        <CartProvider>
           <div className="d-flex flex-column min-vh-100">
             <Header />
             <main className="flex-grow-1">
               <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/about" element={<About />} />
-                <Route path="/product/:id" element={<ProductPage />} />
+                <Route path="/products/:id" element={<ProductPage />} />
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/register" element={<RegisterPage />} />
                 <Route
@@ -52,9 +52,9 @@ function App() {
             </main>
             <Footer />
           </div>
-        </Router>
+        </CartProvider>
       </AuthProvider>
-    </CartProvider>
+    </Router>
   )
 }
 

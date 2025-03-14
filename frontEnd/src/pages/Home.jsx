@@ -1,14 +1,50 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import ProductCard from '../components/ProductCard'
 import CategoryCard from '../components/CategoryCard'
-import products from '../data/products.json'
-import categories from '../data/categories.json'
 import useDocumentTitle from '../hooks/useDocumentTitle'
-import { Container, Row, Col } from 'react-bootstrap'
+import { Container, Row, Col, Spinner, Alert } from 'react-bootstrap'
 import '../assets/styles/components/home.css'
 
 function Home() {
+  const [categories, setCategories] = useState([])
+  const [products, setProducts] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
+
   useDocumentTitle('PC Store - Loja de Eletrônicos')
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [categoriesRes, productsRes] = await Promise.all([
+          fetch('http://localhost:5000/api/categories'),
+          fetch('http://localhost:5000/api/products'),
+        ])
+
+        if (!categoriesRes.ok || !productsRes.ok) {
+          throw new Error('Erro ao carregar dados')
+        }
+
+        const [categoriesData, productsData] = await Promise.all([
+          categoriesRes.json(),
+          productsRes.json(),
+        ])
+
+        setCategories(categoriesData)
+        setProducts(productsData)
+      } catch (err) {
+        setError(err.message)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchData()
+  }, [])
+
+  if (loading)
+    return <Spinner animation="border" className="d-block mx-auto my-5" />
+  if (error) return <Alert variant="danger">{error}</Alert>
 
   return (
     <Container className="my-5">

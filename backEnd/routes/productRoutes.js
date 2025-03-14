@@ -4,10 +4,17 @@ const Product = require('../models/ProductModel')
 
 router.get('/:id', async (req, res) => {
   try {
-    const product = await Product.findById(req.params.id)
+    const productId = parseInt(req.params.id, 10)
+
+    if (isNaN(productId)) {
+      return res.status(400).json({ error: 'ID deve ser um número' })
+    }
+    const product = await Product.findOne({ id: productId })
+
     if (!product) {
       return res.status(404).json({ error: 'Product não encontrado' })
     }
+
     res.json(product)
   } catch (error) {
     console.error('Erro: ', error.message)

@@ -1,7 +1,91 @@
 import PropTypes from 'prop-types'
-import React, { createContext, useContext, useState, useEffect } from 'react'
+import React, { createContext, useContext, useReducer, useEffect } from 'react'
+import { useAuth } from './AuthContext'
 
 const CartContext = createContext()
+
+const initialState = []
+
+const cartReducer = (state, action) => {
+  switch (action.type) {
+    case 'ADD_ITEM': {
+      const existingItem = state.find((item) => item.id === action.payload.id)
+      if (existingItem) {
+        return state.map((item) =>
+          item.id === action.payload.id
+            ? { ...item, quantity: item.quantity + 1 }
+            : item,
+        )
+      } else {
+        return [...state, { ...action.payload, quantity: 1 }]
+      }
+    }
+
+    case 'REMOVE_ITEM': {
+      return state.filter((item) => item.id !== action.payload.id)
+    }
+
+    case 'CLEAR_CART': {
+      return []
+    }
+
+    case 'INIT_CART': {
+      return action.payload
+    }
+
+    default:
+      return state
+  }
+}
+
+export const CartProvider = ({ children }) => {
+  const [cart, dispatch] = useReducer(cartReducer, initialState)
+  const { user } = useAuth()
+
+  useEffect(() => {
+    if (!user) {
+      dispatch({ type: 'CLEAR_CART' })
+      localStorage.removeItem('cart')
+    }
+  }, [user])
+
+  useEffect(() => {
+    const savedCart = localStorage.getItem('cart')
+    if (savedCart) {
+      dispatch({ type: 'INIT_CART', payload: JSON.parse(savedCart) })
+    }
+  }, [])
+
+  useEffect(() => {
+    if (user) {
+      localStorage.setItem('cart', JSON.stringify(cart))
+    }
+  }, [cart, user])
+
+  const addToCart = (product) => {
+    if (!user) {
+      return { error: 'Usuário não logado' }
+    }
+    dispatch({ type: 'ADD_ITEM', payload: product })
+    return { success: true }
+  }
+
+  const removeFromCart = (productId) => {
+    dispatch({ type: 'REMOVE_ITEM', payload: { id: productId } })
+  }
+
+  return (
+    <CartContext.Provider
+      value={{
+        cart,
+        addToCart,
+        removeFromCart,
+      }}
+    >
+      {children}
+    </CartContext.Provider>
+  )
+}
 
 export const useCart = () => {
   const context = useContext(CartContext)
@@ -9,74 +93,6 @@ export const useCart = () => {
     throw new Error('useCart deve ser usado dentro de um CartProvider')
   }
   return context
-}
-
-export const CartProvider = ({ children }) => {
-  console.log('CartProvider montado')
-  const [cartItems, setCartItems] = useState(() => {
-    const savedCart = localStorage.getItem('cart')
-    return savedCart ? JSON.parse(savedCart) : []
-  })
-
-  //Persistir carrinho
-  useEffect(() => {
-    localStorage.setItem('cart', JSON.stringify(cartItems))
-  }, [cartItems])
-
-  const clearCart = () => {
-    setCartItems([])
-    localStorage.removeItem('cart')
-  }
-
-  const addToCart = (product, quantity = 1) => {
-    setCartItems((prevItems) => {
-      const existingItem = prevItems.find((item) => item.id === product.id)
-
-      // Verificação do estoque
-      if (product.stock < (existingItem?.quantity || 0) + quantity) {
-        alert('Quantidade solicitada excede o estoque disponível')
-        return prevItems
-      }
-
-      return existingItem
-        ? prevItems.map((item) =>
-            item._id === product._id
-              ? { ...item, quantity: item.quantity + quantity }
-              : item,
-          )
-        : [...prevItems, { ...product, quantity }]
-    })
-  }
-
-  const removeFromCart = (productId) => {
-    setCartItems((prevItems) =>
-      prevItems.filter((item) => item._id !== productId),
-    )
-  }
-
-  const updateQuantity = (productId, newQuantity) => {
-    setCartItems((prevItems) =>
-      prevItems.map((item) =>
-        item._id === productId
-          ? { ...item, quantity: Math.min(newQuantity, item.stock) }
-          : item,
-      ),
-    )
-  }
-
-  return (
-    <CartContext.Provider
-      value={{
-        cartItems,
-        addToCart,
-        removeFromCart,
-        updateQuantity,
-        clearCart,
-      }}
-    >
-      {children}
-    </CartContext.Provider>
-  )
 }
 
 CartProvider.propTypes = {

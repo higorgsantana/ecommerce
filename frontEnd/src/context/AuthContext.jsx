@@ -9,20 +9,16 @@ import {
   signInWithEmailAndPassword,
   sendPasswordResetEmail,
   sendEmailVerification,
-  signOut,
   signInWithPopup,
   onAuthStateChanged,
 } from 'firebase/auth'
 import PropTypes from 'prop-types'
-import { useCart } from './CartContext'
 
 const AuthContext = createContext()
 
 export const AuthProvider = ({ children }) => {
-  console.log('AuthProvider montado')
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
-  const cart = useCart()
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -47,9 +43,12 @@ export const AuthProvider = ({ children }) => {
     return signInWithEmailAndPassword(auth, email, password)
   }
 
-  const logOut = () => {
-    cart.clearCart()
-    return signOut(auth)
+  const logOut = async () => {
+    try {
+      await auth.signOut()
+    } catch (error) {
+      console.error('Erro ao fazer logout: ', error)
+    }
   }
 
   const resetPassword = (email) => {

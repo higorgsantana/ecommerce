@@ -3,9 +3,22 @@ import { useCart } from '../context/CartContext'
 import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import { Card, Button } from 'react-bootstrap'
+import { useAuth } from '../context/AuthContext'
+import { useNavigate } from 'react-router-dom'
 
 const ProductCard = ({ product }) => {
   const { addToCart } = useCart()
+  const { user } = useAuth()
+  const navigate = useNavigate()
+
+  const handleAddToCart = () => {
+    if (!user) {
+      alert('Faça login primeiro!')
+      navigate('/login')
+      return
+    }
+    addToCart(product)
+  }
 
   return (
     <Card className="h-100 shadow-sm">
@@ -35,7 +48,7 @@ const ProductCard = ({ product }) => {
       <Button
         variant="primary"
         className="mx-3 mb-3"
-        onClick={() => addToCart(product)}
+        onClick={handleAddToCart}
         aria-label={`Adicionar ${product.name} ao carrinho`}
       >
         Adicionar ao carrinho

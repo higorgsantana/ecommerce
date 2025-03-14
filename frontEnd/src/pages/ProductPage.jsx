@@ -12,25 +12,40 @@ const ProductPage = () => {
   const [error, setError] = useState('')
   const { addToCart } = useCart()
 
+  if (!id) {
+    return <Alert variant="warning">ID do produto não especificado</Alert>
+  }
+
   useEffect(() => {
     const fetchProduct = async () => {
       try {
+        const productId = parseInt(id, 10)
+
+        if (isNaN(productId)) {
+          throw new Error('ID inválido')
+        }
+
         const response = await fetch(`http://localhost:5000/api/products/${id}`)
+
         if (!response.ok) throw new Error('Produto não encontrado')
+
         const data = await response.json()
         setProduct(data)
       } catch (err) {
-        setError(err.message)
+        setError(err.message || 'Erro ao carregar o produto')
       } finally {
         setLoading(false)
       }
     }
 
-    fetchProduct()
+    if (id) {
+      fetchProduct()
+    }
   }, [id])
 
   if (loading)
     return <Spinner animation="border" className="d-block mx-auto my-5" />
+
   if (error)
     return (
       <Alert variant="danger" className="m-3">

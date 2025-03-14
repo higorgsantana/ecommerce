@@ -23,7 +23,7 @@ const Header = () => {
   const { isMobile } = useMobileDetection(768)
   const [showMobileSearch, setShowMobileSearch] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
-  const { cartItems } = useCart()
+  const { cart } = useCart()
 
   const handleSearch = (e) => {
     e.preventDefault()
@@ -119,7 +119,7 @@ const Header = () => {
                   <Button variant="outline-light" className="ms-3">
                     <BiCart className="fs-5" />
                     <span className="ms-1 badge bg-danger">
-                      {cartItems.reduce((acc, item) => acc + item.quantity, 0)}
+                      {cart.reduce((acc, item) => acc + item.quantity, 0)}
                     </span>
                   </Button>
                 </Link>
@@ -140,7 +140,7 @@ const Header = () => {
                   <Button variant="link" className="text-white p-0">
                     <BiCart className="fs-5" />
                     <span className="ms-1 badge bg-danger">
-                      {cartItems.reduce((acc, item) => acc + item.quantity, 0)}
+                      {cart.reduce((acc, item) => acc + item.quantity, 0)}
                     </span>
                   </Button>
                 </Link>
