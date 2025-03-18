@@ -5,13 +5,15 @@ import PropTypes from 'prop-types'
 const ProductGallery = ({ images }) => {
   const [activeIndex, setActiveIndex] = useState(0)
 
+  const imagesArray = typeof images === 'string' ? [images] : images
+
   return (
     <div>
       <Row className="mb-3">
         <Col>
           <div className="border rounded-3 overflow-hidden">
             <img
-              src={images[activeIndex]}
+              src={imagesArray[activeIndex]}
               alt="Imagem principal"
               className="img-fluid"
               style={{
@@ -26,7 +28,7 @@ const ProductGallery = ({ images }) => {
       </Row>
 
       <Row className="g-2">
-        {images.map((img, index) => (
+        {imagesArray.map((img, index) => (
           <Col xs={3} key={index}>
             <div
               role="button"
@@ -48,7 +50,10 @@ const ProductGallery = ({ images }) => {
 }
 
 ProductGallery.propTypes = {
-  images: PropTypes.string.isRequired,
+  images: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.arrayOf(PropTypes.string),
+  ]).isRequired,
 }
 
 export default ProductGallery
