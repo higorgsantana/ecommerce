@@ -33,6 +33,16 @@ const cartReducer = (state, action) => {
       return action.payload
     }
 
+    case 'UPDATE_QUANTITY': {
+      return state.flatMap((item) => {
+        if (item.id === action.payload.productId) {
+          const newQuantity = Math.max(0, action.payload.newQuantity)
+          return newQuantity > 0 ? [{ ...item, quantity: newQuantity }] : []
+        }
+        return [item]
+      })
+    }
+
     default:
       return state
   }
@@ -70,6 +80,13 @@ export const CartProvider = ({ children }) => {
     return { success: true }
   }
 
+  const updateQuantity = (productId, newQuantity) => {
+    dispatch({
+      type: 'UPDATE_QUANTITY',
+      payload: { productId, newQuantity },
+    })
+  }
+
   const removeFromCart = (productId) => {
     dispatch({ type: 'REMOVE_ITEM', payload: { id: productId } })
   }
@@ -80,6 +97,8 @@ export const CartProvider = ({ children }) => {
         cart,
         addToCart,
         removeFromCart,
+        updateQuantity,
+        clearCart: () => dispatch({ type: 'CLEAR_CART' }),
       }}
     >
       {children}

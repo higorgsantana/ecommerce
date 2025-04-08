@@ -9,10 +9,14 @@
 }
 
 .card {
-  max-width: 300px; /* Limite máximo de largura */
-  margin: 0 auto; /* Centraliza os cards */
   border-radius: 12px !important;
   transition: transform 0.2s;
+  width: 100%;
+}
+
+.category-page .card {
+  max-width: none !important;
+  margin: 0 !important;
 }
 
 .card:hover {

@@ -4,6 +4,8 @@ import ProductGallery from '../components/ProductGallery'
 import ProductSpecs from '../components/ProductSpecs'
 import { useCart } from '../context/CartContext'
 import { useParams } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
 
 const ProductPage = () => {
   const { id } = useParams()
@@ -11,6 +13,17 @@ const ProductPage = () => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const { addToCart } = useCart()
+  const { currentUser } = useAuth()
+  const navigate = useNavigate()
+
+  const handleAddToCart = () => {
+    if (!currentUser) {
+      alert('Você precisa estar logado para adicionar itens ao carrinho!')
+      navigate('/login')
+      return
+    }
+    addToCart(product)
+  }
 
   if (!id) {
     return <Alert variant="warning">ID do produto não especificado</Alert>
@@ -58,7 +71,7 @@ const ProductPage = () => {
       <Row className="g-5">
         {/* Galeria */}
         <Col lg={6}>
-          <ProductGallery images={product.images} />
+          <ProductGallery images={product.image} />
         </Col>
 
         {/* Informações */}
@@ -75,11 +88,7 @@ const ProductPage = () => {
             <ProductSpecs specs={product.specs} />
 
             <div className="mt-auto">
-              <Button
-                variant="primary"
-                size="lg"
-                onClick={() => addToCart(product)}
-              >
+              <Button variant="primary" size="lg" onClick={handleAddToCart}>
                 Adicionar ao Carrinho
               </Button>
             </div>
@@ -90,8 +99,15 @@ const ProductPage = () => {
       {/* Descrição */}
       <Row className="mt-5">
         <Col>
-          <h3 className="mb-3">Descrição do Produto</h3>
-          <p className="text-secondary">{product.description}</p>
+          <div className="bg-light p-4 rounded-3">
+            <h3 className="mb-4 border-bottom pb-2">Descrição do Produto</h3>
+            <div
+              className="description-content"
+              style={{ whiteSpace: 'pre-wrap' }}
+            >
+              {product.description}
+            </div>
+          </div>
         </Col>
       </Row>
     </Container>

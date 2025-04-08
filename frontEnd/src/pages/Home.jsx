@@ -17,7 +17,7 @@ function Home() {
     const fetchData = async () => {
       try {
         const [categoriesRes, productsRes] = await Promise.all([
-          fetch('http://localhost:5000/api/categories'),
+          fetch('http://localhost:5000/api/category'),
           fetch('http://localhost:5000/api/products'),
         ])
 

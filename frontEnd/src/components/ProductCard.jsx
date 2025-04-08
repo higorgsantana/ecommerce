@@ -6,7 +6,7 @@ import { Card, Button } from 'react-bootstrap'
 import { useAuth } from '../context/AuthContext'
 import { useNavigate } from 'react-router-dom'
 
-const ProductCard = ({ product }) => {
+const ProductCard = ({ product, isCategoryPage }) => {
   const { addToCart } = useCart()
   const { user } = useAuth()
   const navigate = useNavigate()
@@ -21,7 +21,9 @@ const ProductCard = ({ product }) => {
   }
 
   return (
-    <Card className="h-100 shadow-sm">
+    <Card
+      className={`h-100 shadow-sm ${isCategoryPage ? 'p-3 border-2' : 'p-2'}`}
+    >
       <Link
         to={`/products/${product.id}`}
         className="text-decoration-none text-dark"
@@ -30,11 +32,16 @@ const ProductCard = ({ product }) => {
           variant="top"
           src={product.image}
           alt={product.name}
-          className="p-3"
-          style={{ height: '200px', objectFit: 'contain' }}
+          className={isCategoryPage ? 'p-3' : 'p-2'}
+          style={{
+            height: isCategoryPage ? '220px' : 200,
+            objectFit: 'contain',
+          }}
         />
-        <Card.Body className="d-flex flex-column">
-          <Card.Title className="text-center mb-3 product-title">
+        <Card.Body className={'d-flex flex-column'}>
+          <Card.Title
+            className={`text-center ${isCategoryPage ? 'mb-4' : 'mb-2'}`}
+          >
             {product.name}
           </Card.Title>
           <Card.Text className="text-center text-sucess fw-bold mb-3">
@@ -64,6 +71,11 @@ ProductCard.propTypes = {
     price: PropTypes.number.isRequired,
     image: PropTypes.string.isRequired,
   }).isRequired,
+  isCategoryPage: PropTypes.bool,
+}
+
+ProductCard.defaultProps = {
+  isCategoryPage: false,
 }
 
 export default ProductCard
