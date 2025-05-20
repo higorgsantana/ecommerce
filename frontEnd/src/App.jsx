@@ -7,13 +7,14 @@ import CartPage from './pages/CartPage'
 import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
 import ForgotPasswordPage from './pages/ForgotPasswordPage'
-// import ProfilePage from './pages/ProfilePage'
+import UserPage from './pages/UserPage'
 import CategoryPage from './pages/CategoryPage'
 import Home from './pages/Home'
 import About from './pages/About'
 import Header from './components/Header'
 import Footer from './components/Footer'
 import RequireAuth from './components/RequireAuth'
+import SearchResultsPage from './pages/SearchResultPage'
 
 function App() {
   return (
@@ -33,18 +34,19 @@ function App() {
                 />
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/register" element={<RegisterPage />} />
+                <Route path="/search" element={<SearchResultsPage />} />
                 <Route
                   path="/forgot-password"
                   element={<ForgotPasswordPage />}
                 />
-                {/* <Route
+                <Route
                   path="/profile"
                   element={
                     <RequireAuth>
-                      <ProfilePage />
+                      <UserPage />
                     </RequireAuth>
                   }
-                /> */}
+                />
                 <Route
                   path="/cart"
                   element={

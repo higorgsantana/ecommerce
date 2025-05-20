@@ -13,10 +13,14 @@ const ProductPage = () => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const { addToCart } = useCart()
-  const { currentUser } = useAuth()
+  const { user: currentUser, loading: authLoading } = useAuth()
   const navigate = useNavigate()
 
   const handleAddToCart = () => {
+    if (authLoading) {
+      return
+    }
+
     if (!currentUser) {
       alert('Você precisa estar logado para adicionar itens ao carrinho!')
       navigate('/login')

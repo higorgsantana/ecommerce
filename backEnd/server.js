@@ -1,23 +1,40 @@
-const express = require('express')
-const mongoose = require('mongoose')
-const productRoutes = require('./routes/productRoutes')
-const categoryRoutes = require('./routes/categoryRoutes')
-const cors = require('cors')
-require('dotenv').config()
+import dotenv from 'dotenv'
+dotenv.config()
+
+import express from 'express'
+import mongoose from 'mongoose'
+import productRoutes from './routes/productRoutes.js'
+import categoryRoutes from './routes/categoryRoutes.js'
+import userRoutes from './routes/userRoutes.js'
+import orderRoutes from './routes/orderRoutes.js'
+import paymentRoutes from './routes/paymentRoutes.js'
+import cors from 'cors'
 
 const app = express()
 
-app.use(express.json())
-app.use(cors())
-app.use(express.static('public'))
-
 mongoose
   .connect(process.env.MONGODB_URI)
-  .then(() => console.log('Conectado com MongoDB'))
-  .catch((err) => console.error('Erro de conexão: ', err))
+  .then(() => console.log('✅ Conectado ao MongoDB'))
+  .catch((err) => console.error('❌ Erro de conexão ao MongoDB:', err))
+
+app.use(express.json())
+app.use(
+  cors({
+    origin: 'http://localhost:5173',
+    methods: ['GET', 'POST', 'PUT'],
+  }),
+)
+app.use(express.static('public'))
 
 app.use('/api/products', productRoutes)
 app.use('/api/category', categoryRoutes)
+app.use('/api/users', userRoutes)
+app.use('/api/orders', orderRoutes)
+app.use('/api/payment', paymentRoutes)
+
+app.use('*', (req, res) => {
+  res.status(404).json({ error: 'Rota não encontrada' })
+})
 
 const PORT = process.env.PORT || 5000
 app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`))

@@ -12,7 +12,7 @@ import { BiSearch, BiCart, BiUser, BiMenu } from 'react-icons/bi'
 import Logo from './Logo'
 import useMobileDetection from '../hooks/useMobileDetection'
 import { useAuth } from '../context/AuthContext'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useCart } from '../context/CartContext'
 import '../assets/styles/components/header.css'
 import { auth } from '../firebase-config'
@@ -24,11 +24,14 @@ const Header = () => {
   const [showMobileSearch, setShowMobileSearch] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
   const { cart } = useCart()
+  const navigate = useNavigate()
 
   const handleSearch = (e) => {
     e.preventDefault()
-    console.log('Buscar:', searchTerm)
-    setShowMobileSearch(false)
+    if (searchTerm.trim()) {
+      navigate(`/search?q=${encodeURIComponent(searchTerm)}`)
+      setShowMobileSearch(false)
+    }
   }
 
   useEffect(() => {

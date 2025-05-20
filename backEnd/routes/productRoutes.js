@@ -1,6 +1,6 @@
-const express = require('express')
+import express from 'express'
+import Product from '../models/ProductModels.js'
 const router = express.Router()
-const Product = require('../models/ProductModels')
 
 router.get('/', async (req, res) => {
   try {
@@ -12,33 +12,54 @@ router.get('/', async (req, res) => {
   }
 })
 
+router.get('/search', async (req, res) => {
+  try {
+    const searchTerm = req.query.q?.trim()
+    const products = await Product.find({
+      $or: [
+        {
+          name: {
+            $regex: searchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'),
+            $options: 'i',
+          },
+        },
+        {
+          description: {
+            $regex: searchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'),
+            $options: 'i',
+          },
+        },
+      ],
+    })
+    res.json(
+      products.length > 0 ? products : { message: 'Nenhum produto encontrado' },
+    )
+  } catch (error) {
+    console.error('Erro: ', error)
+    res.status(500).json({ error: 'Erro na busca' })
+  }
+})
+
 router.get('/:id', async (req, res) => {
   try {
-    const productId = parseInt(req.params.id, 10)
-
-    if (isNaN(productId)) {
-      return res.status(400).json({ error: 'ID deve ser um número' })
-    }
-    const product = await Product.findOne({ id: productId })
+    const product = await Product.findById(req.params.id)
 
     if (!product) {
-      return res.status(404).json({ error: 'Product não encontrado' })
+      return res.status(400).json({ error: 'Produto não encontrado' })
     }
 
     res.json(product)
   } catch (error) {
-    console.error('Erro: ', error.message)
-    res.status(500).json({
-      error: 'Erro ao buscar produto',
-      details:
-        process.env.NODE_ENV === 'development' ? error.message : undefined,
-    })
+    if (error.name === 'CastError') {
+      return res.status(400).json({ error: 'Formato de ID inválido' })
+    }
+    res.status(500).json({ error: 'Erro ao buscar produto' })
   }
 })
 
 router.post('/', async (req, res) => {
-  const newProduct = new Product(req.body)
   try {
+    const newProduct = new Product(req.body)
     const savedProduct = await newProduct.save()
     res.status(201).json(savedProduct)
   } catch (error) {
@@ -47,4 +68,4 @@ router.post('/', async (req, res) => {
   }
 })
 
-module.exports = router
+export default router

@@ -3,6 +3,7 @@ import {
   auth,
   GoogleAuthProvider,
   GithubAuthProvider,
+  updateProfile,
 } from '../firebase-config'
 import {
   createUserWithEmailAndPassword,
@@ -12,6 +13,7 @@ import {
   signInWithPopup,
   onAuthStateChanged,
 } from 'firebase/auth'
+import axios from 'axios'
 import PropTypes from 'prop-types'
 
 const AuthContext = createContext()
@@ -29,14 +31,60 @@ export const AuthProvider = ({ children }) => {
     return () => unsubscribe()
   }, [])
 
-  const signUp = async (email, password) => {
-    const userCredential = await createUserWithEmailAndPassword(
-      auth,
-      email,
-      password,
-    )
-    await sendEmailVerification(userCredential.user)
-    return userCredential
+  const signUp = async (email, password, displayName) => {
+    try {
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password,
+      )
+
+      await updateProfile(userCredential.user, { displayName })
+
+      await axios.post('http://localhost:5000/api/users', {
+        firebaseId: userCredential.user.uid,
+        email: email,
+        displayName: displayName,
+      })
+
+      await sendEmailVerification(userCredential.user)
+      return userCredential
+    } catch (error) {
+      console.error('Erro no registro: ', error)
+      throw error
+    }
+  }
+
+  const updateUserProfile = async (updates) => {
+    try {
+      const currentUser = auth.currentUser
+
+      if (!currentUser) {
+        throw new Error('Nenhum usuário autenticado')
+      }
+
+      await updateProfile(currentUser, updates)
+
+      setUser((prev) => ({
+        ...prev,
+        displayName: currentUser.displayName,
+        photoURL: currentUser.photoURL,
+      }))
+    } catch (error) {
+      console.error('Erro ao atualizar o perfil: ', error)
+      throw error
+    }
+  }
+
+  const updatePhoneNumber = async (phoneNumber) => {
+    try {
+      const currentUser = auth.currentUser
+      await updatePhoneNumber(currentUser, phoneNumber)
+      setUser((prev) => ({ ...prev, phoneNumber }))
+    } catch (error) {
+      console.error('Erro ao atualizar o telefone: ', error)
+      throw error
+    }
   }
 
   const login = (email, password) => {
@@ -46,6 +94,7 @@ export const AuthProvider = ({ children }) => {
   const logOut = async () => {
     try {
       await auth.signOut()
+      setUser(null)
     } catch (error) {
       console.error('Erro ao fazer logout: ', error)
     }
@@ -70,17 +119,19 @@ export const AuthProvider = ({ children }) => {
   return (
     <AuthContext.Provider
       value={{
-        user,
-        loading,
+        user: user,
+        loading: loading,
         signUp,
         login,
         logOut,
         resetPassword,
         signInWithGoogle,
         signInWithGithub,
+        updateUserProfile,
+        updatePhoneNumber,
       }}
     >
-      {children}
+      {!loading && children}
     </AuthContext.Provider>
   )
 }

@@ -74,8 +74,4 @@ ProductCard.propTypes = {
   isCategoryPage: PropTypes.bool,
 }
 
-ProductCard.defaultProps = {
-  isCategoryPage: false,
-}
-
 export default ProductCard
