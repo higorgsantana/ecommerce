@@ -10,11 +10,12 @@ import ForgotPasswordPage from './pages/ForgotPasswordPage'
 import UserPage from './pages/UserPage'
 import CategoryPage from './pages/CategoryPage'
 import Home from './pages/Home'
-import About from './pages/About'
+import About from './pages/AboutPage'
 import Header from './components/Header'
 import Footer from './components/Footer'
 import RequireAuth from './components/RequireAuth'
 import SearchResultsPage from './pages/SearchResultPage'
+import ContactPage from './pages/ContactPage'
 
 function App() {
   return (
@@ -35,6 +36,7 @@ function App() {
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/register" element={<RegisterPage />} />
                 <Route path="/search" element={<SearchResultsPage />} />
+                <Route path="/contact" element={<ContactPage />} />
                 <Route
                   path="/forgot-password"
                   element={<ForgotPasswordPage />}

@@ -37,10 +37,10 @@ const Footer = () => {
               <Link to="/" className="text-light text-decoration-none">
                 Home
               </Link>
-              <Link to="/sobre" className="text-light text-decoration-none">
+              <Link to="/about" className="text-light text-decoration-none">
                 Sobre
               </Link>
-              <Link to="/contato" className="text-light text-decoration-none">
+              <Link to="/contact" className="text-light text-decoration-none">
                 Contato
               </Link>
             </div>

@@ -8,6 +8,7 @@ import categoryRoutes from './routes/categoryRoutes.js'
 import userRoutes from './routes/userRoutes.js'
 import orderRoutes from './routes/orderRoutes.js'
 import paymentRoutes from './routes/paymentRoutes.js'
+import contactRoutes from './routes/contactRoutes.js'
 import cors from 'cors'
 
 const app = express()
@@ -25,12 +26,14 @@ app.use(
   }),
 )
 app.use(express.static('public'))
+app.use(express.urlencoded({ extended: true }))
 
 app.use('/api/products', productRoutes)
 app.use('/api/category', categoryRoutes)
 app.use('/api/users', userRoutes)
 app.use('/api/orders', orderRoutes)
 app.use('/api/payment', paymentRoutes)
+app.use('/api/contact', contactRoutes)
 
 app.use('*', (req, res) => {
   res.status(404).json({ error: 'Rota não encontrada' })

@@ -1,0 +1,17 @@
+.about-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.lead {
+  font-size: 1.25rem;
+  color: #444;
+}
+
+.card {
+  transition: transform 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+}
