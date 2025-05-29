@@ -27,6 +27,11 @@ app.use(
 )
 app.use(express.static('public'))
 app.use(express.urlencoded({ extended: true }))
+app.use((req, res, next) => {
+  res.removeHeader('Permissions-Policy')
+  res.removeHeader('Feature-Policy')
+  next()
+})
 
 app.use('/api/products', productRoutes)
 app.use('/api/category', categoryRoutes)

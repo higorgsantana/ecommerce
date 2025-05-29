@@ -51,6 +51,10 @@ const cartReducer = (state, action) => {
 export const CartProvider = ({ children }) => {
   const [cart, dispatch] = useReducer(cartReducer, initialState)
   const { user } = useAuth()
+  const cartTotal = cart.reduce(
+    (sum, item) => sum + item.price * 100 * item.quantity,
+    0,
+  )
 
   useEffect(() => {
     if (!user) {
@@ -98,6 +102,7 @@ export const CartProvider = ({ children }) => {
         addToCart,
         removeFromCart,
         updateQuantity,
+        cartTotal,
         clearCart: () => dispatch({ type: 'CLEAR_CART' }),
       }}
     >

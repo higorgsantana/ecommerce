@@ -1,0 +1,11 @@
+.payment-form .StripeElement {
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  padding: 10px;
+  margin: 10px 0;
+}
+
+.payment-form .StripeElement--focus {
+  border-color: #80bdff;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}

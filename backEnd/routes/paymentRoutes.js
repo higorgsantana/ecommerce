@@ -1,25 +1,30 @@
 import express from 'express'
 import Stripe from 'stripe'
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-  apiVersion: '2024-06-20',
-  typescript: false,
-})
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
 
 const router = express.Router()
 
 router.post('/create-payment-intent', async (req, res) => {
   try {
     const { amount } = req.body
+    console.log('Recebendo solicitação de PaymentIntent. Amount:', amount)
 
-    const paymentIntent = await stripe.paymentIntent.create({
-      amount: amount * 100,
+    if (!amount || isNaN(amount)) {
+      return res.status(400).json({ error: 'Valor inválido' })
+    }
+
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: Math.round(amount),
       currency: 'brl',
+      payment_method_types: ['card'],
     })
 
+    console.log('PaymentIntent criado:', paymentIntent.id)
     res.status(200).json({ clientSecret: paymentIntent.client_secret })
   } catch (error) {
-    res.status(500).json({ error: error.message })
+    console.error('Erro no Stripe:', error.message)
+    res.status(500).json({ error: error.message || 'Erro interno' })
   }
 })
 

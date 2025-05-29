@@ -16,6 +16,7 @@ import Footer from './components/Footer'
 import RequireAuth from './components/RequireAuth'
 import SearchResultsPage from './pages/SearchResultPage'
 import ContactPage from './pages/ContactPage'
+import CheckOutPage from './pages/CheckOutPage'
 
 function App() {
   return (
@@ -54,6 +55,14 @@ function App() {
                   element={
                     <RequireAuth>
                       <CartPage />
+                    </RequireAuth>
+                  }
+                />
+                <Route
+                  path="/checkout"
+                  element={
+                    <RequireAuth>
+                      <CheckOutPage />
                     </RequireAuth>
                   }
                 />

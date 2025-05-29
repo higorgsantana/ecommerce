@@ -65,7 +65,7 @@ const UserPage = () => {
           phoneNumber: userData.phoneNumber || '',
           address: userData.address || '',
         })
-        setOrders(ordersData)
+        setOrders(Array.isArray(ordersData) ? ordersData : [])
       } catch (error) {
         console.error('Erro detalhado: ', error)
         setError('Erro ao carregar dados: ' + error.message)
@@ -289,17 +289,26 @@ const UserPage = () => {
                           <div className="d-flex align-items-center gap-3">
                             <div className="bg-light rounded p-2">
                               <span className="text-muted">
-                                #{order._id.slice(-6)}
+                                Pedido #{order._id.slice(-6).toUpperCase()}
                               </span>
                             </div>
                             <div>
                               <h6 className="mb-1">
                                 {new Date(order.createdAt).toLocaleDateString(
                                   'pt-BR',
+                                  {
+                                    day: '2-digit',
+                                    month: '2-digit',
+                                    year: 'numeric',
+                                  },
                                 )}
                               </h6>
                               <small className="text-muted">
-                                {order.items.length} item(ns)
+                                {order.items.reduce(
+                                  (sum, item) => sum + item.quantity,
+                                  0,
+                                )}{' '}
+                                item(ns)
                               </small>
                             </div>
                           </div>

@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js'
 import { useCart } from '../context/CartContext'
+import PropTypes from 'prop-types'
 
-const PaymentForm = () => {
+const PaymentForm = ({ onSuccess }) => {
   const stripe = useStripe()
   const elements = useElements()
   const { cartTotal } = useCart()
@@ -36,27 +37,43 @@ const PaymentForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault()
     setLoading(true)
+    setError('')
 
-    if (!stripe || !elements) {
-      setError('Stripe não carregado corretamente')
+    if (!stripe || !elements || !clientSecret) {
+      setError('Configuração de pagamento incompleta')
+      setLoading(false)
       return
     }
 
-    const { error: stripeError } = await stripe.confirmCardPayment(
-      clientSecret,
-      {
+    try {
+      const result = await stripe.confirmCardPayment(clientSecret, {
         payment_method: {
           card: elements.getElement(CardElement),
+          billing_details: {
+            address: {
+              postal_code: 'CEP_COLETADO_NO_FORMULARIO',
+            },
+          },
         },
-      },
-    )
+      })
 
-    setLoading(false)
-
-    if (stripeError) {
-      setError(stripeError.message)
-    } else {
-      alert('Pagamento realizado com sucesso')
+      if (result.error) {
+        setError(result.error.message)
+      } else {
+        console.log('Pagamento realizado com sucesso', result.paymentIntent)
+        if (result.paymentIntent.status === 'succeeded') {
+          if (onSuccess) {
+            onSuccess(true)
+          }
+        } else {
+          setError('Pagamento não foi concluido com sucesso')
+        }
+      }
+    } catch (err) {
+      console.error('Erro: ', err)
+      setError('Erro durante o processamento do pagamento')
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -70,6 +87,7 @@ const PaymentForm = () => {
               color: '#424770',
               '::placeholder': { color: '#aab7c4' },
             },
+
             invalid: { color: '#9e2146' },
           },
         }}
@@ -85,6 +103,10 @@ const PaymentForm = () => {
       </button>
     </form>
   )
+}
+
+PaymentForm.propTypes = {
+  onSuccess: PropTypes.func.isRequired,
 }
 
 export default PaymentForm
