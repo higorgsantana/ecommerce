@@ -71,7 +71,7 @@ const CartPage = () => {
                   <Col md={3} className="text-end">
                     <Button
                       variant="danger"
-                      onClick={() => removeFromCart(item.id)}
+                      onClick={() => removeFromCart(item.id, item.name)}
                     >
                       <FaTrash />
                     </Button>

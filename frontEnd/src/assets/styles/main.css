@@ -77,3 +77,31 @@ main {
     order: 2;
   }
 }
+
+.Toastify__toast {
+  border-radius: 8px !important;
+  font-family: 'Poppins', sans-serif;
+}
+
+.product-gallery .main-image {
+  position: relative;
+  overflow: hidden;
+}
+
+.product-gallery .main-image .img-fluid {
+  transition: transform 0.3s;
+}
+
+.product-gallery .main-image:hover .img-fluid {
+  transform: scale(1.03);
+}
+
+.thumbnail {
+  transition: all 0.2s ease;
+  overflow: hidden;
+}
+
+.thumbnail:hover {
+  transform: scale(1.05);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+}

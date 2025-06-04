@@ -5,6 +5,7 @@ import { useAuth } from '../context/AuthContext'
 import { Link } from 'react-router-dom'
 import { FcGoogle } from 'react-icons/fc'
 import { FaGithub } from 'react-icons/fa'
+import { toast } from 'react-toastify'
 
 const LoginPage = () => {
   const [email, setEmail] = useState('')
@@ -20,9 +21,27 @@ const LoginPage = () => {
     try {
       setLoading(true)
       setError('')
+      const toastId = toast.loading('Fazendo login...', {
+        position: 'bottom-right',
+      })
+
       await login(email, password)
+
+      toast.update(toastId, {
+        render: `Bem-vindo, ${email}!`,
+        type: `success`,
+        isLoading: false,
+        autoClose: 3000,
+        closeButton: true,
+      })
+
       navigate(location.state?.from || '/')
     } catch (err) {
+      toast.dismiss()
+      toast.error(`Falha no login: ${err.message}`, {
+        position: 'bottom-right',
+      })
+
       setError('Falha no login: ' + err.message)
     } finally {
       setLoading(false)
@@ -33,11 +52,28 @@ const LoginPage = () => {
     try {
       setLoading(true)
       setError('')
+      const toastId = toast.loading(`Entrando com ${provider}...`, {
+        position: 'bottom-right',
+      })
+
       if (provider === 'google') await signInWithGoogle()
       if (provider === 'github') await signInWithGithub()
+
+      toast.update(toastId, {
+        render: 'Login realizado com sucesso!',
+        type: 'success',
+        isLoading: false,
+        autoClose: 3000,
+        closeButton: true,
+      })
+
       navigate(location.state?.from || '/')
     } catch (err) {
+      toast.dismiss()
       if (err.code !== 'auth/popup-closed-by-user') {
+        toast.error(`Erro no login social: ${err.message}`, {
+          position: 'bottom-right',
+        })
         setError('Erro no login social: ' + err.message)
       }
     } finally {

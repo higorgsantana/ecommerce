@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types'
 import React, { createContext, useContext, useReducer, useEffect } from 'react'
 import { useAuth } from './AuthContext'
+import { toast } from 'react-toastify'
 
 const CartContext = createContext()
 
@@ -78,9 +79,11 @@ export const CartProvider = ({ children }) => {
 
   const addToCart = (product) => {
     if (!user) {
+      toast.error('Faça login para adicionar itens ao carrinho  ')
       return { error: 'Usuário não logado' }
     }
     dispatch({ type: 'ADD_ITEM', payload: product })
+    toast.success(`${product.name} adicionado ao carrinho!`)
     return { success: true }
   }
 
@@ -91,8 +94,13 @@ export const CartProvider = ({ children }) => {
     })
   }
 
-  const removeFromCart = (productId) => {
+  const removeFromCart = (productId, productName) => {
     dispatch({ type: 'REMOVE_ITEM', payload: { id: productId } })
+    toast.info(`${productName} removido do carrinho`)
+  }
+
+  const clearCart = () => {
+    dispatch({ type: 'CLEAR_CART' })
   }
 
   return (
@@ -100,10 +108,11 @@ export const CartProvider = ({ children }) => {
       value={{
         cart,
         addToCart,
-        removeFromCart,
+        removeFromCart: (productId, productName) =>
+          removeFromCart(productId, productName),
         updateQuantity,
         cartTotal,
-        clearCart: () => dispatch({ type: 'CLEAR_CART' }),
+        clearCart,
       }}
     >
       {children}

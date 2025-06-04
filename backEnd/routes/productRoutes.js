@@ -1,5 +1,6 @@
 import express from 'express'
 import Product from '../models/ProductModels.js'
+import mongoose from 'mongoose'
 const router = express.Router()
 
 router.get('/', async (req, res) => {
@@ -42,7 +43,13 @@ router.get('/search', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
   try {
-    const product = await Product.findById(req.params.id)
+    let product
+
+    if (mongoose.Types.ObjectId.isValid(req.params.id)) {
+      product = await Product.findById(req.params.id)
+    } else if (!isNaN(req.params.id)) {
+      product = await Product.findOne({ id: parseInt(req.params.id) })
+    }
 
     if (!product) {
       return res.status(400).json({ error: 'Produto não encontrado' })

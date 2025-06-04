@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js'
 import { useCart } from '../context/CartContext'
+import { toast } from 'react-toastify'
 import PropTypes from 'prop-types'
 
 const PaymentForm = ({ onSuccess }) => {
@@ -41,11 +42,18 @@ const PaymentForm = ({ onSuccess }) => {
 
     if (!stripe || !elements || !clientSecret) {
       setError('Configuração de pagamento incompleta')
+      toast.error('Configuração de pagamento incompleta', {
+        position: 'bottom-right',
+      })
       setLoading(false)
       return
     }
 
     try {
+      const toastId = toast.loading('Processando pagamento...', {
+        position: 'bottom-right',
+      })
+
       const result = await stripe.confirmCardPayment(clientSecret, {
         payment_method: {
           card: elements.getElement(CardElement),
@@ -58,19 +66,45 @@ const PaymentForm = ({ onSuccess }) => {
       })
 
       if (result.error) {
+        toast.update(toastId, {
+          render: `Erro no pagamento: ${result.error.message}`,
+          type: 'error',
+          isLoading: false,
+          autoClose: 5000,
+          closeButton: true,
+        })
         setError(result.error.message)
       } else {
         console.log('Pagamento realizado com sucesso', result.paymentIntent)
+
         if (result.paymentIntent.status === 'succeeded') {
+          toast.update(toastId, {
+            render: 'Pagamento aprovado! Redirecionando...',
+            type: 'success',
+            isLoading: false,
+            autoClose: 3000,
+            closeButton: true,
+          })
+
           if (onSuccess) {
             onSuccess(true)
           }
         } else {
+          toast.update(toastId, {
+            render: 'Pagamento não foi concluído com sucesso',
+            type: 'warning',
+            isLoading: false,
+            autoClose: 5000,
+            closeButton: true,
+          })
           setError('Pagamento não foi concluido com sucesso')
         }
       }
     } catch (err) {
       console.error('Erro: ', err)
+      toast.error('Erro durante o processamento do pagamento: ' + err.message, {
+        position: 'bottom-right',
+      })
       setError('Erro durante o processamento do pagamento')
     } finally {
       setLoading(false)
