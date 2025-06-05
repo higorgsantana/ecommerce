@@ -2,8 +2,6 @@
 
 Projeto fullstack de e-commerce desenvolvido para portfólio, com foco nas tecnologias modernas do ecossistema JavaScript.
 
-![Screenshot da Página do Produto](screenshot.png)
-
 ## Funcionalidades Principais
 - Autenticação de usuários com Firebase
 - Catálogo de produtos com filtros
