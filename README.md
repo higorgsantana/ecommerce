@@ -4,7 +4,6 @@ Projeto fullstack de e-commerce desenvolvido para portfólio, com foco nas tecno
 
 ## Funcionalidades Principais
 - Autenticação de usuários com Firebase
-- Catálogo de produtos com filtros
 - Carrinho de compras persistente
 - Página de produto com galeria de imagens
 - Sistema de avaliações de produtos
