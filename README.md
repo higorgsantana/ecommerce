@@ -2,6 +2,10 @@
 
 Projeto fullstack de e-commerce desenvolvido para portfólio, com foco nas tecnologias modernas do ecossistema JavaScript.
 
+![Home](./frontEnd/public/images/home.png)
+![Product](./frontEnd/public/images/product.png)
+![Login](./frontEnd/public/images/login.png)
+
 ## Funcionalidades Principais
 - Autenticação de usuários com Firebase
 - Carrinho de compras persistente
